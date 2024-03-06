@@ -26,6 +26,8 @@ public:
     {
         queue<int> q;
         vector<int> indegree(n, 0);
+
+        // find the in degree of all the nodes
         for (int i = 0; i < n; i++)
         {
             for (int &v : adj[i])
@@ -33,6 +35,7 @@ public:
                 indegree[v]++;
             }
         }
+        // push all the nodes that have indegree = 0 in the queue
         for (int i = 0; i < n; i++)
         {
             if (indegree[i] == 0)

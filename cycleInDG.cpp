@@ -79,6 +79,13 @@ using namespace std;
 //----------SOLUTION----------
 
 // } Driver Code Ends
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+
+#define pb(a) push_back(a)
 class Solution
 {
 public:
@@ -102,17 +109,76 @@ public:
         inRecursion[u] = false;
         return false;
     }
+    bool BFSIsCycle(vector<int> adj[], int &V, vector<bool> &visited)
+    {
+        queue<int> q;
+        // vector<int> ans;
+
+        vector<int> indegree(V, 0);
+        for (int i = 0; i < V; i++)
+        {
+            for (int &a : adj[i])
+            {
+                indegree[a]++;
+            }
+        }
+        bool flg = false;
+        int cnt = 0;
+        for (int i = 0; i < V; i++)
+        {
+            // for(int j = 0; j < adj[i].length(); j++){
+            if (indegree[i] == 0)
+            {
+                q.push(i);
+                visited[i] == true;
+                flg = true;
+                cnt++;
+            }
+            // }
+        }
+        if (!flg)
+        {
+            return true;
+        }
+        while (!q.empty())
+        {
+            int v = q.front();
+            q.pop();
+            // ans.pb(v);
+            for (int &a : adj[v])
+            {
+                indegree[a]--;
+                if (indegree[a] == 0)
+                {
+                    q.push(a);
+                    visited[a] = true;
+                    cnt++;
+                }
+            }
+        }
+        if (cnt == V)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+        // return false;
+    }
+
     bool isCyclic(int V, vector<int> adj[])
     {
         // code here
         vector<bool> visited(V, false);
-        vector<bool> inRecursion(V, false);
+        // vector<bool> inRecursion(V,false);
         for (int i = 0; i < V; i++)
         {
-            if (!visited[i] && DFS(adj, i, visited, inRecursion))
-            {
+            // if(!visited[i] && DFS(adj,i,visited,inRecursion)){
+            //     return true;
+            // }
+            if (!visited[i] && BFSIsCycle(adj, V, visited))
                 return true;
-            }
         }
         return false;
     }
