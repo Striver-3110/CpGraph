@@ -112,7 +112,6 @@ public:
     bool BFSIsCycle(vector<int> adj[], int &V, vector<bool> &visited)
     {
         queue<int> q;
-        // vector<int> ans;
 
         vector<int> indegree(V, 0);
         for (int i = 0; i < V; i++)
