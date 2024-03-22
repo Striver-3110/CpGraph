@@ -122,6 +122,7 @@ public:
             }
         }
         bool flg = false;
+
         int cnt = 0;
         for (int i = 0; i < V; i++)
         {
