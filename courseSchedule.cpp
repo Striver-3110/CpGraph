@@ -23,7 +23,7 @@ private:
         inRecursion[u] = false;
         return false; 
     }
-    bool isCycleBfs(int n, unordered_map<int,vector<int>> &adj,vector<bool> &visited){
+    bool isCycleBfs(int n, vector<vector<int>> &adj){
         vector<int> inDegree(n,0);
         for(int i = 0; i < n; i++){
             for(auto &v: adj[i]){
@@ -32,7 +32,7 @@ private:
         }
         queue<int> q;
         for(int i = 0; i < n; i++){
-            if(inDegree[i] == 0)q.push(i),visited[i] = true;
+            if(inDegree[i] == 0)q.push(i);
         }
         int node = 0;
         while(!q.empty()){
@@ -41,7 +41,7 @@ private:
             for(auto &v : adj[u]){
                 if(inDegree[v] == 0) continue;
                 inDegree[v]--;
-                if(inDegree[v] == 0) q.push(v),visited[v] = true;
+                if(inDegree[v] == 0) q.push(v);
                 
             }
         }
@@ -53,7 +53,7 @@ private:
 
 public:
     bool canFinish(int n, vector<vector<int>>& a) {
-        unordered_map<int,vector<int>> adj;
+        vector<vector<int>> adj(n);
         for(int i = 0; i < a.size(); i++){
             adj[a[i][1]].push_back(a[i][0]);
         }
@@ -65,9 +65,8 @@ public:
         //     if(!visited[i] && isCycleDfs(i,adj,visited,inRecursion)) return false;
         // }
         // USING KAHN'S ALGORITHM
-        for(int i = 0; i < n; i++){
-            if(!visited[i] && isCycleBfs(n,adj,visited)) return false;
-        }
+        if(isCycleBfs(n,adj))return false;
+        // }
         return true;
     }
 };
