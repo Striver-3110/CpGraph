@@ -1,3 +1,5 @@
+#include<bits/stdc++.h>
+using namespace std;
 static int __star = []
 {
     ios_base::sync_with_stdio(0);
@@ -6,59 +8,69 @@ static int __star = []
 }();
 #define pb(a) push_back(a)
 
-class Solution
-{
-public:
-    bool dfsCycle(vector<int> adj[], vector<bool> &visited, vector<bool> &inStack, int n)
-    {
-        // if(adj[n].size() == 0){
-        //     return false;
-        // }
-        visited[n] = true;
-        inStack[n] = true;
-        for (int &v : adj[n])
-        {
-            // if(v == parent){
-            //     continue;
-            // }
-            if (!visited[v] && dfsCycle(adj, visited, inStack, v))
-            {
-                return true;
-            }
-            if (visited[v] && inStack[v])
-            {
-                return true;
+
+
+
+class Solution {
+private:
+    bool isCycleDfs(int u,unordered_map<int,vector<int>> &adj, vector<bool> &visited, vector<bool> &inRecursion){
+        visited[u] = true;
+        inRecursion[u] = true;
+        for(auto &v: adj[u]){
+            if(visited[v] && inRecursion[v]) return true;
+            if(!visited[v] && isCycleDfs(v,adj,visited,inRecursion))return true;
+        }
+        inRecursion[u] = false;
+        return false; 
+    }
+    bool isCycleBfs(int n, unordered_map<int,vector<int>> &adj,vector<bool> &visited){
+        vector<int> inDegree(n,0);
+        for(int i = 0; i < n; i++){
+            for(auto &v: adj[i]){
+                inDegree[v]++;
             }
         }
-        inStack[n] = false;
+        queue<int> q;
+        for(int i = 0; i < n; i++){
+            if(inDegree[i] == 0)q.push(i),visited[i] = true;
+        }
+        int node = 0;
+        while(!q.empty()){
+            int u = q.front();q.pop();
+            node++;
+            for(auto &v : adj[u]){
+                if(inDegree[v] == 0) continue;
+                inDegree[v]--;
+                if(inDegree[v] == 0) q.push(v),visited[v] = true;
+                
+            }
+        }
+        if(node != n){
+            return true;
+        }
         return false;
     }
-    bool canFinish(int n, vector<vector<int>> &a)
-    {
-        // int n =  numCOurses;
-        vector<int> adj[n];
-        // for(int i = 0; i < n; i++){
-        //     for(int j = 0; j < n; j++){
 
-        //     }
-        // }
-        for (int i = 0; i < a.size(); i++)
-        {
-            adj[a[i][1]].pb(a[i][0]);
+public:
+    bool canFinish(int n, vector<vector<int>>& a) {
+        unordered_map<int,vector<int>> adj;
+        for(int i = 0; i < a.size(); i++){
+            adj[a[i][1]].push_back(a[i][0]);
         }
-        vector<bool> visited(n, false);
-        vector<bool> inStack(n, false);
-        for (int i = 0; i < n; i++)
-        {
-            if (!visited[i] && dfsCycle(adj, visited, inStack, i))
-            {
-                return false;
-            }
+
+        // USING DFS 
+        vector<bool> visited(n,false);
+        // vector<bool> inRecursion(n,false);
+        // for(int i = 0; i < n; i++){
+        //     if(!visited[i] && isCycleDfs(i,adj,visited,inRecursion)) return false;
+        // }
+        // USING KAHN'S ALGORITHM
+        for(int i = 0; i < n; i++){
+            if(!visited[i] && isCycleBfs(n,adj,visited)) return false;
         }
         return true;
     }
 };
-
 int main()
 {
     Solution solution;

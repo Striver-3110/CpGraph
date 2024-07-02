@@ -47,7 +47,7 @@ public:
         else
         {
             parent[parent_u] = parent_v;
-            rank[parent_u]++;
+            rank[parent_v]++;
         }
         return false;
     }
@@ -65,8 +65,8 @@ public:
         {
             for (int v : adj[u])
             {
-                // as it is un direcred graph
-                // we are not required to visit the sane edge twice!
+                // as it is undirected graph
+                // we are not required to visit the same edge twice!
                 if (u < v)
                 {
                     if (_union(u, v, parent, rank) == true)
