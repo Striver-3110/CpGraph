@@ -9,47 +9,50 @@ using namespace std;
 //     return 0;
 // }();
 
-class Solution
-{
-public:
-    bool dfs(vector<vector<int>> &adj, vector<int> &c,
-             int node, int nc)
-    {
-        c[node] = nc;
-        // visited[node] = true;
 
-        for (int &a : adj[node])
-        {
-            if (c[node] == c[a])
-            {
-                return false;
-            }
-            if (c[a] == -1)
-            {
-                nc = 1 - c[node];
-                if (!dfs(adj, c, a, nc))
-                {
-                    return false;
-                }
+class Solution{
+private:
+    bool dfs(int u, vector<vector<int>>& adj, vector<int> &color, int c){
+        color[u] = c;
+        for(auto &v: adj[u]){
+            if(color[v] != -1 && color[v] == c) return false;
+            if(color[v] != -1 && color[v] != c) continue;
+            if(color[v] == -1 && !dfs(v,adj,color,1-c))return false;
+        }
+        return true;
+    }
+    bool bfs(int u, vector<vector<int>>& adj, vector<int> &color, int c){
+        color[u] = c;
+
+        queue<int> q;
+        q.push(u);
+
+        while(!q.empty()){
+            int node = q.front();q.pop();
+            int clr = color[node];
+            for(auto &v: adj[node]){
+                if(color[v] != -1 && color[v] == clr)return false;
+                if(color[v] != -1 && color[v] != clr) continue;
+                if(color[v] == -1)q.push(v),color[v] = 1-clr;
             }
         }
         return true;
     }
-    bool isBipartite(vector<vector<int>> &adj)
-    {
+public:
+    bool isBipartite(vector<vector<int>>& adj) {
         int n = adj.size();
-        vector<int> c(n, -1);
-        for (int i = 0; i < n; i++)
-        {
-            if (c[i] == -1 && !dfs(adj, c, i, 1))
-            {
-                return false;
-            }
+        vector<int> color(n,-1);
+        // for(int i = 0; i < n; i++){
+        //     if(color[i] == -1 && !dfs(i,adj,color,0))return false;
+        // }
+        // return true;
+        for(int i = 0; i < n; i++){
+            if(color[i] == -1 && !bfs(i,adj,color,0))return false;
         }
         return true;
+
     }
 };
-
 int main()
 {
     vector<vector<int>> adjacencyMatrix = {
